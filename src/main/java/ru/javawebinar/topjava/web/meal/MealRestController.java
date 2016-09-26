@@ -5,14 +5,13 @@ import org.springframework.stereotype.Controller;
 
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.MealWithExceed;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import java.util.List;
 
 /**
@@ -21,10 +20,12 @@ import java.util.List;
  */
 @Controller
 public class MealRestController {
+    private final MealService mealService;
+
     @Autowired
-    private MealService mealService;
-    @Autowired
-    private UserService userService;
+    public MealRestController(MealService mealService) {
+        this.mealService = mealService;
+    }
 
     private void checkUserAuthorized(int userId) {
         if (userId != AuthorizedUser.id()) {
@@ -32,14 +33,8 @@ public class MealRestController {
         }
     }
 
-    public void save(Integer id, int userId) {
+    public void save(Meal meal, int userId) {
         checkUserAuthorized(userId);
-        Meal meal;
-        if (id == null) {
-            meal = new Meal(userId, LocalDateTime.now().withNano(0).withSecond(0), "", 1000);
-        } else {
-            meal = mealService.get(id, userId);
-        }
         mealService.save(meal, userId);
     }
 
@@ -50,9 +45,13 @@ public class MealRestController {
         }
     }
 
-    public List<MealWithExceed> getFilteredWithExceeded(int userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<MealWithExceed> getFilteredWithExceeded(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         checkUserAuthorized(userId);
-        User user = userService.get(userId);
-        return MealsUtil.getFilteredWithExceeded(mealService.getAll(userId), startDateTime, endDateTime, user.getCaloriesPerDay());
+        return mealService.getFilteredWithExceeded(userId, startDate, endDate, startTime, endTime);
+    }
+
+    public Meal get(int id, int userId) {
+        checkUserAuthorized(userId);
+        return mealService.get(id, userId);
     }
 }

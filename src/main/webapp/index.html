@@ -7,9 +7,24 @@
 <body>
 <h2>Проект "<a href="https://github.com/JavaWebinar/topjava08" target="_blank">Java Enterprise (Topjava)"</a></h2>
 <hr>
+    <label for="userId">
+        User id:
+    </label>
+    <select id="userId" onchange="changeUserId();">
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+    </select>
+<hr>
 <ul>
-    <li><a href="users">User List</a></li>
-    <li><a href="meals">Meal List</a></li>
+    <li><a href="users?userId=1" id="userList">User List</a></li>
+    <li><a href="meals?userId=1" id="mealList">Meal List</a></li>
 </ul>
 </body>
+<script type="text/javascript">
+    function changeUserId() {
+        var userId = document.getElementById("userId").value;
+        document.getElementById("mealList").setAttribute("href", "meals?userId=" + userId);
+        document.getElementById("userList").setAttribute("href", "users?userId=" + userId);
+    }
+</script>
 </html>

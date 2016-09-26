@@ -31,17 +31,16 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     private Map<Integer, User> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
-    {
+    public InMemoryUserRepositoryImpl() {
         UsersUtil.USERS.forEach(this::save);
     }
 
     @Override
     public boolean delete(int id) {
         LOG.info("delete " + id);
-        if (get(id) == null) {
+        if (repository.remove(id) == null) {
             return false;
         }
-        repository.remove(id);
         boolean result = true;
         for (Meal meal : mealRepository.getAll(id)) {
             result &= mealRepository.delete(meal.getId(), id);
@@ -76,11 +75,10 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User getByEmail(String email) {
         LOG.info("getByEmail " + email);
-        for (User user : repository.values()) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
+        List<User> users = repository.values().stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        if (users.isEmpty()) {
+            return null;
         }
-        return null;
+        return users.get(0);
     }
 }
