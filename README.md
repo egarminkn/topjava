@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f0e3485e261445cba16220c0c558100)](https://www.codacy.com/app/egarminkn/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=egarminkn/topjava&amp;utm_campaign=Badge_Grade)
+
 Java Enterprise Online Project 
 ===============================
 Наиболее востребованные технологии /инструменты / фреймворки Java Enterprise:
