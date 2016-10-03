@@ -1,2 +1,5 @@
 language: java
 jdk: oraclejdk8
+before_script:
+  - psql -c 'create database topjava' -U postgres
+  - psql -c 'create user "user";grant all privileges on database topjava to "user"' -U postgres
