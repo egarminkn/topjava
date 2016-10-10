@@ -4,4 +4,4 @@ target
 *.iml
 log
 *.patch
-hsqldb
+/hsqldb
