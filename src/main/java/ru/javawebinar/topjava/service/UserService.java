@@ -17,6 +17,7 @@ public interface UserService {
     void delete(int id) throws NotFoundException;
 
     User get(int id) throws NotFoundException;
+    User getEager(int id) throws NotFoundException;
 
     User getByEmail(String email) throws NotFoundException;
 

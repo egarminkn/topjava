@@ -14,6 +14,7 @@ import java.util.Collection;
  */
 public interface MealService {
     Meal get(int id, int userId) throws NotFoundException;
+    Meal getEager(int id, int userId) throws NotFoundException;
 
     void delete(int id, int userId) throws NotFoundException;
 

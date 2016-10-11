@@ -17,6 +17,10 @@ public interface UserRepository {
     // null if not found
     User get(int id);
 
+    default User getEager(int id) {
+        throw new UnsupportedOperationException("UserRepository.getEager");
+    }
+
     // null if not found
     User getByEmail(String email);
 

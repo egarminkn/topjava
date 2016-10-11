@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,6 +21,11 @@ import java.util.Set;
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
         @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
         @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = User.GET_EAGER, query = "SELECT u FROM User u " +
+                                                   "LEFT JOIN FETCH u.meals m" +
+                                                   "LEFT JOIN FETCH u.roles " +
+                                                   "WHERE u.id=:id " +
+                                                   "ORDER BY u.name ASC, u.email ASC, mLEFT.dateTime DESC")
 })
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
@@ -28,6 +34,7 @@ public class User extends NamedEntity {
     public static final String DELETE = "User.delete";
     public static final String ALL_SORTED = "User.getAllSorted";
     public static final String BY_EMAIL = "User.getByEmail";
+    public static final String GET_EAGER = "User.getEager";
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -54,6 +61,9 @@ public class User extends NamedEntity {
     @Column(name = "calories_per_day", columnDefinition = "default 2000")
     @Digits(fraction = 0, integer = 4)
     private int caloriesPerDay = MealsUtil.DEFAULT_CALORIES_PER_DAY;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user") // mappedBy - это отсыл к полю private User user в классе Meal
+    private List<Meal> meals;
 
     public User() {
     }
@@ -119,6 +129,14 @@ public class User extends NamedEntity {
         return password;
     }
 
+    public List<Meal> getMeals() {
+        return meals;
+    }
+
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     @Override
     public String toString() {
         return "User (" +
@@ -130,4 +148,5 @@ public class User extends NamedEntity {
                 ", caloriesPerDay=" + caloriesPerDay +
                 ')';
     }
+
 }

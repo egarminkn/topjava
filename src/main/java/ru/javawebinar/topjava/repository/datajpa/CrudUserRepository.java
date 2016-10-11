@@ -33,4 +33,8 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
 
     User getByEmail(String email);
 
+    @Query(name = User.GET_EAGER)
+    // В отличие от SpringJdbcTemplate и JPA-через-Hibernate, если Spring-Data-JPA не найдет ни одного юзера, то будет возвращен null, а не брошен какой-нибудь EmptyResultException
+    User getEager(@Param("id") int id);
+
 }

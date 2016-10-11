@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
@@ -49,6 +50,15 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     public Meal get(int id, int userId) {
         List<Meal> meals = crudRepository.findOne(id, userId);
         return DataAccessUtils.singleResult(meals);
+    }
+
+    @Override
+    public Meal getEager(int id, int userId) {
+        Meal meal = get(id, userId);
+        if (meal != null) {
+            Hibernate.initialize(meal.getUser()); // Вытаскиваем LAZY-юзера
+        }
+        return meal;
     }
 
     @Override
