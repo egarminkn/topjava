@@ -2,17 +2,16 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.TimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,19 +23,15 @@ import java.util.Objects;
  * User: gkislin
  * Date: 19.08.2014
  */
-public class MealServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(MealServlet.class);
+@Controller
+public class MealController {
+    private static final Logger LOG = LoggerFactory.getLogger(MealController.class);
 
+    @Autowired
     private MealRestController mealController;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-        mealController = springContext.getBean(MealRestController.class);
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(value = "/meals", method = RequestMethod.POST)
+    protected String doPost(HttpServletRequest request) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         if (action == null) {
@@ -52,16 +47,16 @@ public class MealServlet extends HttpServlet {
                 LOG.info("Update {}", meal);
                 mealController.update(meal, getId(request));
             }
-            response.sendRedirect("meals");
-
+            return "redirect:meals";
         } else if ("filter".equals(action)) {
             LocalDate startDate = TimeUtil.parseLocalDate(resetParam("startDate", request));
             LocalDate endDate = TimeUtil.parseLocalDate(resetParam("endDate", request));
             LocalTime startTime = TimeUtil.parseLocalTime(resetParam("startTime", request));
             LocalTime endTime = TimeUtil.parseLocalTime(resetParam("endTime", request));
             request.setAttribute("meals", mealController.getBetween(startDate, startTime, endDate, endTime));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+            return "meals";
         }
+        throw new IllegalArgumentException("action имеет недопустимое значение (должно быть либо null, либо filter)");
     }
 
     private String resetParam(String param, HttpServletRequest request) {
@@ -70,27 +65,27 @@ public class MealServlet extends HttpServlet {
         return value;
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(value = "/meals", method = RequestMethod.GET)
+    protected String doGet(HttpServletRequest request) throws ServletException, IOException {
         String action = request.getParameter("action");
 
         if (action == null) {
             LOG.info("getAll");
             request.setAttribute("meals", mealController.getAll());
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-
+            return "meals";
         } else if ("delete".equals(action)) {
             int id = getId(request);
             LOG.info("Delete {}", id);
             mealController.delete(id);
-            response.sendRedirect("meals");
-
+            return "redirect:meals";
         } else if ("create".equals(action) || "update".equals(action)) {
             final Meal meal = "create".equals(action) ?
                     new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), "", 1000) :
                     mealController.get(getId(request));
             request.setAttribute("meal", meal);
-            request.getRequestDispatcher("meal.jsp").forward(request, response);
+            return "meal";
         }
+        throw new IllegalArgumentException("action имеет недопустимое значение (должно быть одно из [null, delete, create, update])");
     }
 
     private int getId(HttpServletRequest request) {
