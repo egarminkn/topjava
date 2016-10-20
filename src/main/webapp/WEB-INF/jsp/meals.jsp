@@ -10,7 +10,7 @@
 <section>
     <h2><a href="${pageContext.request.contextPath}/"><fmt:message key="app.home" /></a></h2>
     <h3><fmt:message key="meals.title" /></h3>
-    <form method="post" action="meals/filter">
+    <form method="post" action="${pageContext.request.contextPath}/meals/filter">
         <dl>
             <dt><fmt:message key="meals.filter.from.date" />:</dt>
             <dd><input type="date" name="startDate" value="${startDate}"></dd>
