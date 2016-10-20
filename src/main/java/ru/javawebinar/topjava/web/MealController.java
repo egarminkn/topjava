@@ -32,7 +32,6 @@ public class MealController {
 
     @RequestMapping(value = "/meals", method = RequestMethod.POST)
     protected String doPostActionNull(HttpServletRequest request) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
         final Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -50,7 +49,6 @@ public class MealController {
 
     @RequestMapping(value = "/meals/filter", method = RequestMethod.POST)
     protected String doPostActionFilter(HttpServletRequest request) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
         LocalDate startDate = TimeUtil.parseLocalDate(resetParam("startDate", request));
         LocalDate endDate = TimeUtil.parseLocalDate(resetParam("endDate", request));
         LocalTime startTime = TimeUtil.parseLocalTime(resetParam("startTime", request));

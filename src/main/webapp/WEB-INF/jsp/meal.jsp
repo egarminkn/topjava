@@ -7,7 +7,7 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp" />
 <section>
-    <h2><a href="${pageContext.request.contextPath}/"><fmt:message key="app.home" /></a></h2>
+    <h2><a href=""><fmt:message key="app.home" /></a></h2>
     <h3>
         <c:choose>
             <c:when test="${param.action == 'create'}">
@@ -20,7 +20,7 @@
     </h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="${pageContext.request.contextPath}/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><fmt:message key="meal.datetime" />:</dt>
