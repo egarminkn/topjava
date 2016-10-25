@@ -43,7 +43,7 @@ public class ModelMatcher<T> {
         this.comparator = comparator;
     }
 
-    private class Wrapper {
+    public class Wrapper {
         private T entity;
 
         private Wrapper(T entity) {
