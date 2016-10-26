@@ -63,7 +63,7 @@ public class MealRestController extends AbstractMealController {
         AuthorizedUser.setId(userId);
         Meal created = super.create(meal);
 
-        Map ids = new HashMap<>();
+        Map<String, Integer> ids = new HashMap<>();
         ids.put("userId", userId);
         ids.put("id", created.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()

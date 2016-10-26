@@ -152,7 +152,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
     @Test
     public void testGetBetween() throws Exception {
         LocalDate startDate = LocalDate.of(2015, Month.MAY, 31);
-        LocalTime startTime = LocalTime.of(13, 00);
+        LocalTime startTime = LocalTime.of(13, 0);
         MessageFormat REST_URL_TEMPLATE = new MessageFormat("/rest/users/{0, number,#}/meals/filter?startDate={1}&startTime={2}&endDate=&endTime=");
         String url = REST_URL_TEMPLATE.format(new Object[] {USER_ID, startDate, startTime});
         mockMvc.perform(get(url))
