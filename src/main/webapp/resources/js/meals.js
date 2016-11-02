@@ -44,6 +44,7 @@ function createEventHandlers() {
     createClickEventHandlersForAddMeal();
     createClickEventHandlerForUpdateMeal();
     createClickEventHandlerForDeleteMeal();
+    createClickEventHandlerForFilter();
 }
 
 function createClickEventHandlerForUpdateMeal() {
@@ -97,6 +98,13 @@ function createClickEventHandlersForAddMeal() {
         });
 
         $('#mealRow').modal();
+    });
+}
+
+function createClickEventHandlerForFilter() {
+    $('#filterForm').submit(function() {
+        updateTable();
+        return false;
     });
 }
 
@@ -168,7 +176,14 @@ function now() {
 }
 
 function updateTable() {
-    $.get(ajaxUrl, function(data) {
+    var params = {
+        startDate: $('#startDate').val(),
+        startTime: $('#startTime').val(),
+        endDate:   $('#endDate').val(),
+        endTime:   $('#endTime').val()
+    };
+    var url = ajaxUrl + "/between?" + $.param(params);
+    $.get(url, function(data) {
         // один способо
         // dataTableApi.clear();
         // dataTableApi.rows.add(data);

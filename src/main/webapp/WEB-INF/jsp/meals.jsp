@@ -12,29 +12,49 @@
     <div class="container"> <!-- bootstrap - центровка -->
         <h3><fmt:message key="meals.title"/></h3>
 
-        <form method="post" action="meals/filter">
-            <dl>
-                <dt><fmt:message key="meals.startDate"/>:</dt>
-                <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
-            </dl>
-            <dl>
-                <dt><fmt:message key="meals.endDate"/>:</dt>
-                <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
-            </dl>
-            <dl>
-                <dt><fmt:message key="meals.startTime"/>:</dt>
-                <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
-            </dl>
-            <dl>
-                <dt><fmt:message key="meals.endTime"/>:</dt>
-                <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
-            </dl>
-            <button type="submit" class="btn btn-xs btn-primary"><fmt:message key="meals.filter"/></button>
-            <!--
-                btn         - bootstrap общий стиль для кнопок
-                btn-xs      - bootstrap узкая кнопка
-                btn-primary - bootstrap синий цвет для кнопки
-            -->
+        <form class="form-horizontal" method="post" action="meals/filter" id="filterForm">
+            <div class="form-group">
+                <label for="startDate" class="control-label col-xs-3">
+                    <fmt:message key="meals.startDate"/>:
+                </label>
+                <div class="col-xs-9">
+                    <input class="form-control" type="date" name="startDate" id="startDate" value="${param.startDate}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="endDate" class="control-label col-xs-3">
+                    <fmt:message key="meals.endDate"/>:
+                </label>
+                <div class="col-xs-9">
+                    <input class="form-control" type="date" name="endDate" id="endDate" value="${param.endDate}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="startTime" class="control-label col-xs-3">
+                    <fmt:message key="meals.startTime"/>:
+                </label>
+                <div class="col-xs-9">
+                    <input class="form-control" type="time" name="startTime" id="startTime" value="${param.startTime}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="endTime" class="control-label col-xs-3">
+                    <fmt:message key="meals.endTime"/>:
+                </label>
+                <div class="col-xs-9">
+                    <input class="form-control" type="time" name="endTime" id="endTime" value="${param.endTime}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-9">
+                    <button type="submit" class="btn btn-xs btn-primary"><fmt:message key="meals.filter"/></button>
+                    <!--
+                        btn         - bootstrap общий стиль для кнопок
+                        btn-xs      - bootstrap узкая кнопка
+                        btn-primary - bootstrap синий цвет для кнопки
+                    -->
+                </div>
+            </div>
         </form>
         <hr>
         <a href="meals/create" class="btn btn-xs btn-info" data-add><fmt:message key="meals.add"/></a>
