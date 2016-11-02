@@ -1,3 +1,17 @@
+function inverseEnable() {
+    var id = this.closest('tr').attr("id");
+    var enabled = this.is(":checked");
+    $.ajax({
+        url: ajaxUrl + id + '?enabled=' + enabled,
+        type: 'PUT',
+        //data: 'enabled=' + enabled, // так нельзя, т.е. параметры метода PUT отправляются как и для GET в адресной строке
+        success: function() {
+            updateTable();
+            successNoty('Updated');
+        }
+    });
+}
+
 function makeEditable() {
     $('.delete').click(function () {
         deleteRow($(this).closest('tr').attr("id"));
@@ -6,6 +20,11 @@ function makeEditable() {
     $('#detailsForm').submit(function () {
         save();
         return false;
+    });
+
+    $('#datatable').find('input[type="checkbox"]').change(function(event) {
+        event.preventDefault();
+        inverseEnable.call($(this));
     });
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
@@ -68,14 +87,14 @@ function successNoty(text) {
         text: text,
         type: 'success',
         layout: 'bottomRight',
-        timeout: true
+        timeout: 1000
     });
 }
 
 function failNoty(event, jqXHR, options, jsExc) {
     closeNoty();
     failedNote = noty({
-        text: 'Failed: ' + jqXHR.statusText + "<br>",
+        text: 'Failed: ' + jqXHR.statusText,
         type: 'error',
         layout: 'bottomRight'
     });
