@@ -109,35 +109,35 @@
 
     // $(document).ready(function () {
     $(function () {
-        datatableApi = $('#datatable').dataTable({
-            "bPaginate": false,
-            "bInfo": false,
-            "aoColumns": [
+        datatableApi = $('#datatable').DataTable({
+            "paging": false,
+            "info": false,
+            "columns": [
                 {
-                    "mData": "name"
+                    "data": "name"
                 },
                 {
-                    "mData": "email"
+                    "data": "email"
                 },
                 {
-                    "mData": "roles"
+                    "data": "roles"
                 },
                 {
-                    "mData": "enabled"
+                    "data": "enabled"
                 },
                 {
-                    "mData": "registered"
+                    "data": "registered"
                 },
                 {
-                    "sDefaultContent": "Edit",
-                    "bSortable": false
+                    "defaultContent": "Edit",
+                    "sortable": false
                 },
                 {
-                    "sDefaultContent": "Delete",
-                    "bSortable": false
+                    "defaultContent": "Delete",
+                    "sortable": false
                 }
             ],
-            "aaSorting": [
+            "order": [
                 [
                     0,
                     "asc"

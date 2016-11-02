@@ -50,11 +50,9 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ajaxUrl, function (data) {
-        datatableApi.fnClearTable();
-        $.each(data, function (key, item) {
-            datatableApi.fnAddData(item);
-        });
-        datatableApi.fnDraw();
+        datatableApi.clear();
+        datatableApi.rows.add(data);
+        datatableApi.draw();
     });
 }
 
