@@ -219,4 +219,8 @@
 <script type="text/javascript" src="webjars/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="webjars/noty/2.3.8/js/noty/packaged/jquery.noty.packaged.min.js"></script>
 <script type="text/javascript" src="resources/js/meals.js"></script>
+<script type="text/javascript">
+    var updateLinkText = '<fmt:message key="common.update"/>';
+    var deleteLinkText = '<fmt:message key="common.delete"/>';
+</script>
 </html>

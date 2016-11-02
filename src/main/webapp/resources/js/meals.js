@@ -1,31 +1,35 @@
 var ajaxUrl = "ajax/profile/meals";
+var dataTableApi;
+var columnsInfo = [
+                    {
+                        "data": "dateTime"
+                    },
+                    {
+                        "data": "description",
+                        "orderable": false
+                    },
+                    {
+                        "data": "calories",
+                        "orderable": false
+                    },
+                    {
+                        "data": "updateLink",
+                        "defaultContent": "Update",
+                        "orderable": false
+                    },
+                    {
+                        "data": "deleteLink",
+                        "defaultContent": "Delete",
+                        "orderable": false
+                    }
+                ];
 
-$(document).ready(function () {
-    $('table').dataTable({
+$(function () {
+    dataTableApi = $('table').DataTable({
         "paging": false,
         "info": false,
         "searching": false,
-        "columns": [
-            {
-                "data": "dateTime"
-            },
-            {
-                "data": "description",
-                "orderable": false
-            },
-            {
-                "data": "calories",
-                "orderable": false
-            },
-            {
-                "defaultContent": "Update",
-                "orderable": false
-            },
-            {
-                "defaultContent": "Delete",
-                "orderable": false
-            }
-        ],
+        "columns": columnsInfo,
         "order": [
             [
                 0,
@@ -100,15 +104,16 @@ function createClickEventHandlerForDeleteMeal() {
     $('[data-delete]').click(function(event) {
         event.preventDefault();
         var id = $(this).parents('tr').attr("id");
+        var url = ajaxUrl + "/" + id;
         $.ajax({
-            url: ajaxUrl + "/" + id,
+            url: url,
             type: 'DELETE',
             success: function(responseBody, type, response) {
                 updateTable();
-                notify(responseBody, type, response);
+                notify(responseBody, type, response, url);
             },
             error: function(response, type, responseBody) {
-                notify(responseBody, type, response);
+                notify(responseBody, type, response, url);
             }
         });
     });
@@ -128,18 +133,18 @@ function sendJson(jQueryObject, id) {
         data: JSON.stringify(json),
         success: function(responseBody, type, response) {
             updateTable();
-            notify(responseBody, type, response);
+            notify(responseBody, type, response, url);
             $('#mealRow').modal('hide');
         },
         error: function(response, type, responseBody) {
-            notify(responseBody, type, response);
+            notify(responseBody, type, response, url);
         }
     });
 }
 
-function notify(responseBody, type, response) {
+function notify(responseBody, type, response, url) {
     noty({
-        text: 'Status code: ' + response.status,
+        text: 'Status code: ' + response.status + "<br/>Url: " + url,
         type: type,
         layout: 'bottomRight',
         timeout: 1000
@@ -163,5 +168,34 @@ function now() {
 }
 
 function updateTable() {
+    $.get(ajaxUrl, function(data) {
+        // один способо
+        // dataTableApi.clear();
+        // dataTableApi.rows.add(data);
+        // dataTableApi.draw();
 
+        // второй способ - конвеер
+        //dataTableApi.clear().rows.add(data).draw();
+
+        // третий способ - с сохранением стилей
+        dataTableApi.clear();
+        $.each(data, function(i, json) {
+            json.updateLink = '<a href="meals/update?id=' + json.id + '" class="btn btn-xs btn-primary" data-update>' + updateLinkText + '</a>';
+            json.deleteLink = '<a href="meals/delete?id=' + json.id + '" class="btn btn-xs btn-danger" data-delete>' + deleteLinkText + '</a>';
+
+            json.dateTime = json.dateTime.split("T").join(" ").slice(0, 16);
+
+            var row = dataTableApi.row.add(json);
+            var tr = row.node();
+            $(tr).addClass(json.exceed ? 'exceeded' : 'normal');
+            $(tr).attr("id", json.id);
+            $.each($(tr).find('td'), function(i, td) {
+                var tdId = columnsInfo[i].data + "_" + json.id;
+                $(td).attr("id", tdId);
+            });
+        });
+        dataTableApi.draw();
+        createClickEventHandlerForUpdateMeal();
+        createClickEventHandlerForDeleteMeal();
+    });
 }
