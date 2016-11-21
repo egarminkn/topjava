@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="btn btn-sm btn-info" onclick="add()"><fmt:message key="meals.add"/></a>
+                <a class="btn btn-sm btn-info" onclick="add('<fmt:message key="meals.add"/>')"><fmt:message key="meals.add"/></a>
                 <table class="table table-striped display" id="datatable">
                     <thead>
                     <tr>
@@ -60,20 +60,9 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <c:forEach items="${meals}" var="meal">
-                        <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealWithExceed"/>
-                        <tr class="${meal.exceed ? 'exceeded' : 'normal'}">
-                            <td>
-                                    <%--<fmt:parseDate value="${meal.dateTime}" pattern="y-M-dd'T'H:m" var="parsedDate"/>--%>
-                                    <%--<fmt:formatDate value="${parsedDate}" pattern="yyyy.MM.dd HH:mm" />--%>
-                                    ${fn:formatDateTime(meal.dateTime)}
-                            </td>
-                            <td>${meal.description}</td>
-                            <td>${meal.calories}</td>
-                            <td><a class="btn btn-xs btn-primary"><fmt:message key="common.update"/></a></td>
-                            <td><a class="btn btn-xs btn-danger" onclick="deleteRow(${meal.id})"><fmt:message key="common.delete"/></a></td>
-                        </tr>
-                    </c:forEach>
+                    <tbody>
+
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -86,7 +75,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h2 class="modal-title"><fmt:message key="meals.add"/></h2>
+                <h2 class="modal-title" id="modalTitle"></h2>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" method="post" id="detailsForm">
@@ -149,25 +138,50 @@
 
     $(function () {
         datatableApi = $('#datatable').DataTable({
+            "ajax": {
+                "url": ajaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
-            "info": true,
+            "info": false,
+            "searching": false,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function(data, type, row) {
+                        if (type === 'display') {
+                            return data.substr(0,16).replace("T", " ");
+                        }
+                        return data;
+                    }
                 },
                 {
-                    "data": "description"
+                    "data": "description",
+                    "render": function(data, type, row) {
+                        if (type === 'display') {
+                            return data;
+                        }
+                        return data;
+                    }
                 },
                 {
-                    "data": "calories"
+                    "data": "calories",
+                    "render": function(data, type, row) {
+                        if (type === 'display') {
+                            return data;
+                        }
+                        return data;
+                    }
                 },
                 {
-                    "defaultContent": "<fmt:message key="common.update"/>",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "<fmt:message key="common.delete"/>",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -175,14 +189,19 @@
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function(row_tag, row, dataIndex) {
+                $(row_tag).addClass(row.exceed ? 'exceeded' : 'normal');
+            },
+            "initComplete": makeEditable
         });
-        makeEditable();
     });
 </script>
 <script type="text/javascript">
+    var edit_title = '<fmt:message key="meals.edit"/>';
+
     var i18n = [];
-    <c:forEach var="key" items="${'common.failed'}">
+    <c:forEach var="key" items="${['common.failed', 'common.update', 'common.delete', 'common.deleted', 'common.saved']}">
         i18n['${key}'] = '<fmt:message key="${key}"/>';
     </c:forEach>
 </script>

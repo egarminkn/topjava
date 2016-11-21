@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import ru.javawebinar.topjava.to.MealWithExceed;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -27,6 +25,11 @@ public class MealAjaxController extends AbstractMealController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MealWithExceed> getAll() {
         return super.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
     }
 
     @DeleteMapping(value = "/{id}")
