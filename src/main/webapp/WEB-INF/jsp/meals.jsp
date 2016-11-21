@@ -180,4 +180,10 @@
         makeEditable();
     });
 </script>
+<script type="text/javascript">
+    var i18n = [];
+    <c:forEach var="key" items="${'common.failed'}">
+        i18n['${key}'] = '<fmt:message key="${key}"/>';
+    </c:forEach>
+</script>
 </html>

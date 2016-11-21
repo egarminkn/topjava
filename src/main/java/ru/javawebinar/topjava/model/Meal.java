@@ -2,9 +2,12 @@ package ru.javawebinar.topjava.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
+import javax.validation.constraints.NotNull;
+
+import ru.javawebinar.topjava.to.MealTo;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -59,6 +62,10 @@ public class Meal extends BaseEntity {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+
+    public Meal(MealTo mealTo) {
+        this(mealTo.getId(), mealTo.getDateTime(), mealTo.getDescription(), mealTo.getCalories());
     }
 
     public LocalDateTime getDateTime() {
