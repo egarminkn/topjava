@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.exception.DataNotValidException;
 import ru.javawebinar.topjava.util.exception.ExceptionUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -34,7 +35,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User save(User user) {
         Assert.notNull(user, "user must not be null");
-        return repository.save(prepareToSave(user));
+        prepareToSave(user);
+
+        if (repository.getByEmail(user.getEmail()) != null) {
+            throw new DataNotValidException("User with this email already present in application");
+        }
+
+        return repository.save(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -62,17 +69,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @CacheEvict(value = "users", allEntries = true)
     @Override
+    @Transactional
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
-        repository.save(prepareToSave(user));
+        prepareToSave(user);
+
+        User u = repository.getByEmail(user.getEmail());
+        if (u != null && u.getId().intValue() != user.getId().intValue()) {
+            throw new DataNotValidException("User with this email already present in application");
+        }
+
+        repository.save(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
     @Transactional
     @Override
     public void update(UserTo userTo) {
+        User u = repository.getByEmail(userTo.getEmail());
+
         User user = updateFromTo(get(userTo.getId()), userTo);
-        repository.save(prepareToSave(user));
+        prepareToSave(user);
+
+        if (u != null && u.getId().intValue() != user.getId().intValue()) {
+            throw new DataNotValidException("User with this email already present in application");
+        }
+
+        repository.save(user);
     }
 
 

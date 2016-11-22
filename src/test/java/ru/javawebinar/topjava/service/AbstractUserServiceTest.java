@@ -4,9 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.exception.DataNotValidException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         MATCHER.assertCollectionEquals(Arrays.asList(ADMIN, newUser, USER), service.getAll());
     }
 
-    @Test(expected = DataAccessException.class)
+    @Test(expected = DataNotValidException.class)
     public void testDuplicateMailSave() throws Exception {
         service.save(new User(null, "Duplicate", "user@yandex.ru", "newPass", 2000, Role.ROLE_USER));
     }
