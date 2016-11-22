@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.javawebinar.topjava.util.exception.DataNotValidException;
 import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -19,6 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice(annotations = RestController.class)
 public class ExceptionInfoHandler {
     Logger LOG = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataNotValidException.class)
+    @ResponseBody
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ErrorInfo handleDataNotValid(HttpServletRequest req, DataNotValidException e) {
+        return logAndGetErrorInfo(req, e, true);
+    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
